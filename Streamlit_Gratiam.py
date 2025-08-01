@@ -331,6 +331,8 @@ st.subheader("Evolução da PDD Total")
 df_pdd_grafico = df_pdd.groupby('Data', as_index=False)['PDD Prevista'].sum()
 df_pdd_grafico['Tipo'] = df_pdd_grafico['Data'].apply(lambda x: 'Realizado' if x <= pd.to_datetime(data_analise) else 'Previsto')
 
+df_pdd_grafico['Data'] = df_pdd_grafico['Data'].dt.to_pydatetime()
+
 # Cria o gráfico
 fig_pdd = px.line(
     df_pdd_grafico,
