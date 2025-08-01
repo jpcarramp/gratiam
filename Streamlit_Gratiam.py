@@ -351,10 +351,22 @@ fig_pdd.update_layout(
     yaxis_tickformat=",",
     plot_bgcolor="#f0f4ff",
     paper_bgcolor="#f0f4ff",
-    xaxis=dict(title_font=dict(size=14, family="Arial", color="black"), tickfont=dict(size=12, color="black")),
-    yaxis=dict(title_font=dict(size=14, family="Arial", color="black"), tickfont=dict(size=12, color="black")),
+    xaxis=dict(
+        type='date',                        # aqui já defino que é data
+        title='Data',
+        title_font=dict(size=14, family="Arial", color="black"),
+        tickfont=dict(size=12, color="black"),
+        tickformat='%d/%m/%Y',              # e aqui já formata como dia/mês/ano
+        tickangle=45,                       # (opcional) gira um pouco os rótulos
+        dtick="M1"                          # (opcional) força um tick a cada mês
+    ),
+    yaxis=dict(
+        title_font=dict(size=14, family="Arial", color="black"),
+        tickfont=dict(size=12, color="black")
+    ),
     legend_title_text='',
     margin=dict(l=40, r=40, t=20, b=40)
 )
+
 fig_pdd.update_xaxes(type='date', tickformat='%d/%m/%Y')
 st.plotly_chart(fig_pdd, use_container_width=True)
