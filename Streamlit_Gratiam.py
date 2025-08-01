@@ -102,7 +102,14 @@ df_aprop = carregar_dados("Apropriacao_Diaria_Estoque")
 df_venc = carregar_dados("Vencimento_Diario_Estoque")
 
 # Tratamento de datas
-df_aprop['Dia_Analise'] = pd.to_datetime(df_aprop['Dia_Analise'], errors='coerce')
+#df_aprop['Dia_Analise'] = pd.to_datetime(df_aprop['Dia_Analise'], errors='coerce')
+
+df_aprop['Dia_Analise'] = pd.to_datetime(
+    df_aprop['Dia_Analise'],
+    format='%d/%m/%Y',
+    errors='coerce'
+)
+
 df_aprop['DATA'] = pd.to_datetime(df_aprop['DATA'], errors='coerce')
 df_venc['Dia_Analise'] = pd.to_datetime(df_venc['Dia_Analise'], errors='coerce')
 df_venc['DATA'] = pd.to_datetime(df_venc['DATA'], errors='coerce')
