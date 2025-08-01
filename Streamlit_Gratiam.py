@@ -102,14 +102,7 @@ df_aprop = carregar_dados("Apropriacao_Diaria_Estoque")
 df_venc = carregar_dados("Vencimento_Diario_Estoque")
 
 # Tratamento de datas
-#df_aprop['Dia_Analise'] = pd.to_datetime(df_aprop['Dia_Analise'], errors='coerce')
-
-df_aprop['Dia_Analise'] = pd.to_datetime(
-    df_aprop['Dia_Analise'],
-    format='%d/%m/%Y',
-    errors='coerce'
-)
-
+df_aprop['Dia_Analise'] = pd.to_datetime(df_aprop['Dia_Analise'], errors='coerce')
 df_aprop['DATA'] = pd.to_datetime(df_aprop['DATA'], errors='coerce')
 df_venc['Dia_Analise'] = pd.to_datetime(df_venc['Dia_Analise'], errors='coerce')
 df_venc['DATA'] = pd.to_datetime(df_venc['DATA'], errors='coerce')
@@ -209,10 +202,7 @@ with col1:
 
     # Carrega e trata os dados
     df_pdd = carregar_dados("Pdd_Total_Previsto")
-    #df_pdd['Data'] = pd.to_datetime(df_pdd['Data'], dayfirst=True, errors='coerce')
-
-    df_pdd['Data'] = pd.to_datetime(df_pdd['Data'],format='%d/%m/%Y',errors='coerce')
-
+    df_pdd['Data'] = pd.to_datetime(df_pdd['Data'], dayfirst=True, errors='coerce')
     df_pdd['PDD Prevista'] = converter_valores(df_pdd['PDD Prevista'])
 
     df_pdd_agrupado = df_pdd.groupby('Data', as_index=False)['PDD Prevista'].sum()
@@ -338,8 +328,6 @@ st.subheader("Evolução da PDD Total")
 df_pdd_grafico = df_pdd.groupby('Data', as_index=False)['PDD Prevista'].sum()
 df_pdd_grafico['Tipo'] = df_pdd_grafico['Data'].apply(lambda x: 'Realizado' if x <= pd.to_datetime(data_analise) else 'Previsto')
 
-df_pdd_grafico['Data'] = df_pdd_grafico['Data'].dt.to_pydatetime()
-
 # Cria o gráfico
 fig_pdd = px.line(
     df_pdd_grafico,
@@ -360,22 +348,10 @@ fig_pdd.update_layout(
     yaxis_tickformat=",",
     plot_bgcolor="#f0f4ff",
     paper_bgcolor="#f0f4ff",
-    xaxis=dict(
-        type='date',                        # aqui já defino que é data
-        title='Data',
-        title_font=dict(size=14, family="Arial", color="black"),
-        tickfont=dict(size=12, color="black"),
-        tickformat='%d/%m/%Y',              # e aqui já formata como dia/mês/ano
-        tickangle=45,                       # (opcional) gira um pouco os rótulos
-        dtick="M1"                          # (opcional) força um tick a cada mês
-    ),
-    yaxis=dict(
-        title_font=dict(size=14, family="Arial", color="black"),
-        tickfont=dict(size=12, color="black")
-    ),
+    xaxis=dict(title_font=dict(size=14, family="Arial", color="black"), tickfont=dict(size=12, color="black")),
+    yaxis=dict(title_font=dict(size=14, family="Arial", color="black"), tickfont=dict(size=12, color="black")),
     legend_title_text='',
     margin=dict(l=40, r=40, t=20, b=40)
 )
 
-fig_pdd.update_xaxes(type='date', tickformat='%d/%m/%Y')
 st.plotly_chart(fig_pdd, use_container_width=True)
