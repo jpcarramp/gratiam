@@ -202,7 +202,10 @@ with col1:
 
     # Carrega e trata os dados
     df_pdd = carregar_dados("Pdd_Total_Previsto")
-    df_pdd['Data'] = pd.to_datetime(df_pdd['Data'], dayfirst=True, errors='coerce')
+    #df_pdd['Data'] = pd.to_datetime(df_pdd['Data'], dayfirst=True, errors='coerce')
+
+    df_pdd['Data'] = pd.to_datetime(df_pdd['Data'],format='%d/%m/%Y',errors='coerce')
+
     df_pdd['PDD Prevista'] = converter_valores(df_pdd['PDD Prevista'])
 
     df_pdd_agrupado = df_pdd.groupby('Data', as_index=False)['PDD Prevista'].sum()
@@ -353,5 +356,5 @@ fig_pdd.update_layout(
     legend_title_text='',
     margin=dict(l=40, r=40, t=20, b=40)
 )
-
+fig_pdd.update_xaxes(type='date', tickformat='%d/%m/%Y')
 st.plotly_chart(fig_pdd, use_container_width=True)
