@@ -75,12 +75,19 @@ st.sidebar.write("Pré-conversão de VALOR_NOMINAL:", df_venc['VALOR_NOMINAL'].u
 df_aprop['VALOR_APROPRIADO'] = converter_valores(df_aprop['VALOR_APROPRIADO']).fillna(0)
 df_venc ['VALOR_NOMINAL']   = converter_valores(df_venc ['VALOR_NOMINAL']).fillna(0)
 
-# Filtro lateral
+
+# depois de:
 datas_disponiveis = sorted(df_aprop['Dia_Analise'].dropna().unique())
 
+# filtre só os que são mesmo timestamps:
+datas_validas = [d for d in datas_disponiveis if not pd.isna(d)]
 
-st.sidebar.write("Datas disponíveis para análise:", 
-                 [d.strftime("%d/%m/%Y") for d in datas_disponiveis[-5:]])
+# só pegue os últimos 5 e formate em string
+ultimas = datas_validas[-5:]
+st.sidebar.write(
+    "Datas disponíveis para análise:", 
+    [d.strftime("%d/%m/%Y") for d in ultimas]
+)
 
 
 data_analise = st.sidebar.date_input(
