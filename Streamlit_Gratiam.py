@@ -51,45 +51,68 @@ def carregar_dados(sheet_name):
     return df
 
 def converter_valores(coluna):
-    s = (
+    return (
         coluna.astype(str)
-               .str.replace("\u00A0", "", regex=False)
-               .str.replace(".",    "", regex=False)
-               .str.replace(",",    ".", regex=False)
+        .str.replace("\u00A0", "", regex=False)
+        .str.replace(".", "", regex=False)
+        .str.replace(",", ".", regex=False)
+        .astype(float)
     )
-    return pd.to_numeric(s, errors="coerce")
 
-# … autenticar, config, etc …
+
+autenticar()
+
+# ========== CONFIG E ESTILO ==========
+st.set_page_config(page_title="Análise FIDC GRATIAM", layout="wide")
+st.markdown("""
+    <style>
+        .stApp {
+            background-color: #6495ED;
+        }
+        .metric-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        .metric-label {
+            font-size: 18px;
+            color: #333333;
+        }
+        .metric-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #000000;
+        }
+        .styled-box {
+            background-color: #f0f4ff;
+            padding: 10px;
+            border-radius: 12px;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+# ========== EXIBIR LOGO ==========
+st.image(str(image_path), width=180)
+#st.title("Análise FIDC GRATIAM")
 
 # Carregar os dados
 df_aprop = carregar_dados("Apropriacao_Diaria_Estoque")
-df_venc  = carregar_dados("Vencimento_Diario_Estoque")
+df_venc = carregar_dados("Vencimento_Diario_Estoque")
 
-# Tratamento de datas (com dayfirst=True) …
-# …
+# Tratamento de datas
+df_aprop['Dia_Analise'] = pd.to_datetime(df_aprop['Dia_Analise'], errors='coerce')
+df_aprop['DATA'] = pd.to_datetime(df_aprop['DATA'], errors='coerce')
+df_venc['Dia_Analise'] = pd.to_datetime(df_venc['Dia_Analise'], errors='coerce')
+df_venc['DATA'] = pd.to_datetime(df_venc['DATA'], errors='coerce')
 
-# DEBUG: veja o que está na coluna antes de converter
-st.sidebar.write("Pré-conversão de VALOR_NOMINAL:", df_venc['VALOR_NOMINAL'].unique()[:10])
+# Conversão de valores monetários para float
+df_aprop['VALOR_APROPRIADO'] = converter_valores(df_aprop['VALOR_APROPRIADO'])
+df_venc['VALOR_NOMINAL'] = converter_valores(df_venc['VALOR_NOMINAL'])
 
-# Conversão para float (NaN se impossível)
-df_aprop['VALOR_APROPRIADO'] = converter_valores(df_aprop['VALOR_APROPRIADO']).fillna(0)
-df_venc ['VALOR_NOMINAL']   = converter_valores(df_venc ['VALOR_NOMINAL']).fillna(0)
-
-
-# depois de:
+# Filtro lateral
 datas_disponiveis = sorted(df_aprop['Dia_Analise'].dropna().unique())
-
-# filtre só os que são mesmo timestamps:
-datas_validas = [d for d in datas_disponiveis if not pd.isna(d)]
-
-# só pegue os últimos 5 e formate em string
-ultimas = datas_validas[-5:]
-st.sidebar.write(
-    "Datas disponíveis para análise:", 
-    [d.strftime("%d/%m/%Y") for d in ultimas]
-)
-
-
 data_analise = st.sidebar.date_input(
     "Selecione a data de análise:",
     value=datas_disponiveis[-1],
