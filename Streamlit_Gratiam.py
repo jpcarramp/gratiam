@@ -288,7 +288,7 @@ with col_pdd_balao:
 
     # Carregar dados da aba Pdd_Final_Mes
     df_pdd_final = carregar_dados("Pdd_Final_Mes")
-    df_pdd_final['Data_Analise'] = pd.to_datetime(df_pdd_final['Data_Analise'], errors='coerce')
+    df_pdd_final['Data_Analise'] = pd.to_datetime(df_pdd_final['Data_Analise'], dayfirst=True, errors='coerce')
     df_pdd_final['PDD_FINAL'] = converter_valores(df_pdd_final['PDD_FINAL'])
 
     # Datas de hoje e ontem
