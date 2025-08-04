@@ -50,14 +50,17 @@ def carregar_dados(sheet_name):
     df.columns = df.columns.str.strip()
     return df
 
-def converter_valores(coluna):
-    return (
+def converter_valores(coluna: pd.Series) -> pd.Series:
+    """Converte strings no formato brasileiro para float.
+       Valores que não puderem ser convertidos viram NaN."""
+    col = (
         coluna.astype(str)
-        .str.replace("\u00A0", "", regex=False)
-        .str.replace(".", "", regex=False)
-        .str.replace(",", ".", regex=False)
-        .astype(float)
+              .str.replace("\u00A0", "", regex=False)   # remove espaço NBSP
+              .str.replace(".", "", regex=False)        # remove separador de milhar
+              .str.replace(",", ".", regex=False)       # troca vírgula por ponto
     )
+    # to_numeric com errors='coerce' evita quebra
+    return pd.to_numeric(col, errors="coerce")
 
 
 autenticar()
