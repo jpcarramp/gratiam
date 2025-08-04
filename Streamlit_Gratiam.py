@@ -52,14 +52,14 @@ def carregar_dados(sheet_name):
 
 def converter_valores(coluna: pd.Series) -> pd.Series:
     """Converte strings no formato brasileiro para float.
-       Valores que não puderem ser convertidos viram NaN."""
+       Qualquer valor que não puder ser convertido vira NaN."""
     col = (
         coluna.astype(str)
               .str.replace("\u00A0", "", regex=False)   # remove espaço NBSP
               .str.replace(".", "", regex=False)        # remove separador de milhar
               .str.replace(",", ".", regex=False)       # troca vírgula por ponto
     )
-    # to_numeric com errors='coerce' evita quebra
+    # Converte — valores inválidos serão NaN em vez de causar exceção
     return pd.to_numeric(col, errors="coerce")
 
 
