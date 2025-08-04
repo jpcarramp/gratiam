@@ -102,10 +102,23 @@ df_aprop = carregar_dados("Apropriacao_Diaria_Estoque")
 df_venc = carregar_dados("Vencimento_Diario_Estoque")
 
 # Tratamento de datas
-df_aprop['Dia_Analise'] = pd.to_datetime(df_aprop['Dia_Analise'], errors='coerce')
-df_aprop['DATA'] = pd.to_datetime(df_aprop['DATA'], errors='coerce')
-df_venc['Dia_Analise'] = pd.to_datetime(df_venc['Dia_Analise'], errors='coerce')
-df_venc['DATA'] = pd.to_datetime(df_venc['DATA'], errors='coerce')
+df_aprop['Dia_Analise'] = pd.to_datetime(
+    df_aprop['Dia_Analise'],
+    dayfirst=True,      # <<< aqui
+    errors='coerce'
+)
+df_aprop['DATA'] = pd.to_datetime(
+    df_aprop['DATA'],
+    dayfirst=True,      # <<< e aqui
+    errors='coerce'
+)
+# e o mesmo para df_venc:
+df_venc['Dia_Analise'] = pd.to_datetime(df_venc['Dia_Analise'], dayfirst=True, errors='coerce')
+df_venc['DATA']       = pd.to_datetime(df_venc['DATA'],       dayfirst=True, errors='coerce')
+
+
+
+
 
 # Conversão de valores monetários para float
 df_aprop['VALOR_APROPRIADO'] = converter_valores(df_aprop['VALOR_APROPRIADO'])
@@ -113,6 +126,12 @@ df_venc['VALOR_NOMINAL'] = converter_valores(df_venc['VALOR_NOMINAL'])
 
 # Filtro lateral
 datas_disponiveis = sorted(df_aprop['Dia_Analise'].dropna().unique())
+
+
+st.sidebar.write("Datas disponíveis para análise:", 
+                 [d.strftime("%d/%m/%Y") for d in datas_disponiveis[-5:]])
+
+
 data_analise = st.sidebar.date_input(
     "Selecione a data de análise:",
     value=datas_disponiveis[-1],
